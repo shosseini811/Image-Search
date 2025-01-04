@@ -16,7 +16,7 @@ class ImageFinder:
         load_dotenv()
         self.api_key = os.getenv('BING_SEARCH_API_KEY')
         self.endpoint = os.getenv('BING_SEARCH_ENDPOINT')
-        self.face_match_threshold = float(os.getenv('FACE_MATCH_THRESHOLD', 0.6))
+        self.face_match_threshold = float(os.getenv('FACE_MATCH_THRESHOLD', 0.1))
         self.output_dir = Path(os.getenv('OUTPUT_DIR', './found_images'))
         self.output_dir.mkdir(exist_ok=True)
         
@@ -146,7 +146,7 @@ class ImageFinder:
                 if not image_url:
                     continue
                 
-                if verify_faces and reference_encoding:
+                if verify_faces and reference_encoding is not None:
                     # Verify face match before downloading
                     if not self._verify_face_match(reference_encoding, image_url):
                         continue
@@ -166,5 +166,5 @@ class ImageFinder:
 if __name__ == "__main__":
     # Example usage
     finder = ImageFinder()
-    matches = finder.find_similar_images("path_to_your_image.jpg")
+    matches = finder.find_similar_images("images.jpeg")
     print(f"Found {len(matches)} matching images. Check {finder.output_dir} directory.") 

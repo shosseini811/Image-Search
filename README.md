@@ -1,16 +1,15 @@
 # Internet Image Finder
 
-A production-ready tool that helps you find similar images of yourself (or any reference image) across the internet using Microsoft's Bing Visual Search API and face recognition technology.
+A Python tool that finds similar images across the internet using Microsoft's Bing Visual Search API and face recognition technology. It can optionally verify faces to ensure the found images contain the same person as your reference image.
 
 ## Features
 
-- Reverse image search using Bing Visual Search API
-- Optional face verification to ensure matches contain the same person
-- Concurrent downloads for better performance
-- Comprehensive logging
-- Progress tracking for long-running operations
+- Visual search using Bing Visual Search API
+- Face verification using face_recognition library
+- Concurrent image downloads with progress tracking
+- Comprehensive logging system
 - Configurable matching parameters
-- Organized output directory for found images
+- Organized output directory structure
 
 ## Prerequisites
 
@@ -31,69 +30,60 @@ cd Image-Search
 pip install -r requirements.txt
 ```
 
-3. Copy the environment template and configure your settings:
+3. Set up your environment variables:
 ```bash
 cp .env.example .env
 ```
 
-4. Edit `.env` file and add your Bing Search API key:
+4. Edit `.env` file with your configuration:
 ```
 BING_SEARCH_API_KEY=your_api_key_here
+BING_SEARCH_ENDPOINT=your_endpoint_here
+FACE_MATCH_THRESHOLD=0.1
+OUTPUT_DIR=./found_images
 ```
 
 ## Usage
 
-1. Basic usage:
+Basic usage with face verification (default):
 ```python
 from image_finder import ImageFinder
 
 finder = ImageFinder()
-matches = finder.find_similar_images("path_to_your_image.jpg")
-print(f"Found {len(matches)} matching images")
+matches = finder.find_similar_images("reference_image.jpg")
+print(f"Found {len(matches)} matching images. Check {finder.output_dir} directory.")
 ```
 
-2. Disable face verification for general image search:
+Search without face verification:
 ```python
-matches = finder.find_similar_images("path_to_your_image.jpg", verify_faces=False)
+matches = finder.find_similar_images("reference_image.jpg", verify_faces=False)
 ```
 
 ## Configuration
 
-The following environment variables can be configured in `.env`:
+Environment variables in `.env`:
 
-- `BING_SEARCH_API_KEY`: Your Bing Search API key (required)
-- `BING_SEARCH_ENDPOINT`: API endpoint (defaults to v7.0)
-- `FACE_MATCH_THRESHOLD`: Confidence threshold for face matching (0.0 to 1.0, default: 0.6)
-- `OUTPUT_DIR`: Directory for downloaded images (default: ./found_images)
+- `BING_SEARCH_API_KEY` (required): Your Bing Search API key
+- `BING_SEARCH_ENDPOINT` (required): Bing Visual Search API endpoint
+- `FACE_MATCH_THRESHOLD` (optional): Face matching confidence threshold (default: 0.1)
+- `OUTPUT_DIR` (optional): Directory for downloaded images (default: ./found_images)
 
 ## Logging
 
-Logs are stored in `image_finder.log` with the following features:
-- Rotation: 10MB file size
+The application uses loguru for logging:
+- Log file: `image_finder.log`
+- Rotation: 10 MB
 - Retention: 1 week
-- Detailed error tracking and operation status
-
-## Legal Considerations
-
-- Ensure compliance with local privacy laws when searching for faces
-- Respect copyright and usage rights of found images
-- Review Microsoft Bing API terms of service
+- Log level: INFO
 
 ## Error Handling
 
 The tool includes comprehensive error handling for:
-- API failures
-- Network issues
-- Invalid images
-- Face detection problems
-- Download errors
-
-## Performance
-
-- Concurrent downloads with ThreadPoolExecutor
-- Configurable number of worker threads
-- Progress tracking for long operations
-- Efficient memory usage with streaming downloads
+- Missing API credentials
+- Image loading failures
+- Face detection issues
+- Network and API errors
+- Download failures
 
 ## Contributing
 
